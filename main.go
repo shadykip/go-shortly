@@ -1,7 +1,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/gin-gonic/gin"
+	"github.com/shadykip/go-shortly/internal/cache"
 	"github.com/shadykip/go-shortly/internal/handlers"
 	"github.com/shadykip/go-shortly/internal/models"
 	"gorm.io/driver/postgres"
@@ -17,8 +20,16 @@ func main() {
 	}
 	db.AutoMigrate(&models.URL{})
 
+	// 🧠 Redis setup (local fallback)
+	redisAddr := os.Getenv("REDIS_ADDR")
+	if redisAddr == "" {
+		redisAddr = "localhost:6379" // Docker/local Redis
+	}
+	redisCache := cache.NewRedisCache(redisAddr)
+
 	r := gin.Default()
 	r.POST("/shorten", handlers.ShortenHandler(db))
+	r.GET("/:code", handlers.RedirectHandler(db, redisCache))
 
 	r.Run(":8080")
 }
