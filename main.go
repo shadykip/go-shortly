@@ -43,6 +43,10 @@ func main() {
 	r := gin.Default()
 	r.POST("/shorten", handlers.ShortenHandler(db))
 	r.GET("/:code", handlers.RedirectHandler(db, redisCache))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
-	r.Run(":8080")
+	r.Run(":" + port)
 }
