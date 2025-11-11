@@ -26,7 +26,8 @@ func main() {
 	db.AutoMigrate(&models.URL{})
 
 	// 🧠 Redis setup (local fallback)
-	redisURL := os.Getenv("REDIS_URL")
+	// redisURL := os.Getenv("REDIS_URL")
+	redisURL := "redis://red-d49knpmr433s73alhqc0:6379"
 	if redisURL == "" {
 		redisURL = "localhost:6379"
 	} else {
