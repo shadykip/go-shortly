@@ -16,7 +16,7 @@ func ShortenHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req ShortenRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(400, gin.H{"error": "Invalid URL"})
+			c.JSON(400, gin.H{"error": "Invalid URL", "details": err.Error()})
 			return
 		}
 

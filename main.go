@@ -4,11 +4,14 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/shadykip/go-shortly/internal/cache"
 	"github.com/shadykip/go-shortly/internal/handlers"
+	"github.com/shadykip/go-shortly/internal/limiter"
 	"github.com/shadykip/go-shortly/internal/models"
+	"golang.org/x/time/rate"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -40,7 +43,10 @@ func main() {
 	}
 	redisCache := cache.NewRedisCache(redisURL)
 
+	rl := limiter.NewIPLimiter(rate.Every(100*time.Millisecond), 10)
+
 	r := gin.Default()
+	r.Use(limiter.RateLimitMiddleware(rl))
 	r.POST("/shorten", handlers.ShortenHandler(db))
 	r.GET("/:code", handlers.RedirectHandler(db, redisCache))
 	port := os.Getenv("PORT")
