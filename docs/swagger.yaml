@@ -1,0 +1,49 @@
+basePath: /
+definitions:
+  handlers.ShortenRequest:
+    properties:
+      url:
+        type: string
+    required:
+    - url
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: A high-performance URL shortening service
+  title: URL Shortener API
+  version: "1.0"
+paths:
+  /shorten:
+    post:
+      consumes:
+      - application/json
+      description: Create a short URL for a given long URL
+      parameters:
+      - description: URL to shorten
+        in: body
+        name: url
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ShortenRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Shorten a URL
+      tags:
+      - urls
+schemes:
+- http
+swagger: "2.0"

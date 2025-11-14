@@ -12,6 +12,15 @@ type ShortenRequest struct {
 	URL string `json:"url" binding:"required,url"`
 }
 
+// @Summary Shorten a URL
+// @Description Create a short URL for a given long URL
+// @Tags urls
+// @Accept json
+// @Produce json
+// @Param url body ShortenRequest true "URL to shorten"
+// @Success 201 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /shorten [post]
 func ShortenHandler(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req ShortenRequest

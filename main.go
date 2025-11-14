@@ -1,3 +1,6 @@
+//go:build !test
+// +build !test
+
 package main
 
 import (
@@ -11,11 +14,19 @@ import (
 	"github.com/shadykip/go-shortly/internal/handlers"
 	"github.com/shadykip/go-shortly/internal/limiter"
 	"github.com/shadykip/go-shortly/internal/models"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"golang.org/x/time/rate"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+// @title URL Shortener API
+// @version 1.0
+// @description A high-performance URL shortening service
+// @host localhost:8080
+// @BasePath /
+// @schemes http
 func main() {
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
@@ -49,6 +60,8 @@ func main() {
 	r.Use(limiter.RateLimitMiddleware(rl))
 	r.POST("/shorten", handlers.ShortenHandler(db))
 	r.GET("/:code", handlers.RedirectHandler(db, redisCache))
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
