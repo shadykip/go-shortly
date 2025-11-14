@@ -17,7 +17,7 @@ A production-grade URL shortener built in Go.
 
 ```bash
 # CLI
-go install github.com/yourname/go-shortly/cmd/shortly@latest
+go install github.com/shadykip/go-shortly/cmd/shortly@latest
 shortly create https://github.com
 
 # API
